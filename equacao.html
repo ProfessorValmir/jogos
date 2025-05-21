@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aventura das Equações – Missão do X</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e0f7fa, #fff);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffffdd;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #00796b;
+    }
+    .question {
+      margin: 20px 0;
+      font-size: 18px;
+    }
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #b2dfdb;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .options button:hover {
+      background: #80cbc4;
+    }
+    .feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .next {
+      margin-top: 15px;
+      display: block;
+      background: #00796b;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: none;
+    }
+    .score {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #004d40;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Aventura das Equações</h1>
+    <div id="questionContainer">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next" id="nextBtn" onclick="nextQuestion()">Próxima</button>
+    </div>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { question: "🕵️‍♂️ Um número somado com 7 resulta em 20. Qual é esse número?", options: [11, 13, 15, 17], answer: 13 },
+      { question: "🍕 Três pizzas iguais custam R$ 90. Quanto custa cada uma?", options: [25, 30, 35, 45], answer: 30 },
+      { question: "🎢 Ingresso do parque custa R$ 15. Pedro gastou mais R$ 5 em pipoca e pagou R$ 35. Quantos ingressos ele comprou?", options: [1, 2, 3, 4], answer: 2 },
+      { question: "🧁 Marina comprou cupcakes a R$ 4 cada + taxa de R$ 8. Gastou R$ 40. Quantos comprou?", options: [6, 8, 10, 12], answer: 8 },
+      { question: "🧩 Pensei em um número. Multipliquei por 5, subtraí 3 e obtive 27. Qual era o número?", options: [5, 6, 7, 8], answer: 6 },
+      { question: "🧙‍♂️ Três vezes o número mágico + 12 resulta em 33. Qual é o número?", options: [5, 6, 7, 8], answer: 7 },
+      { question: "🕹️ O dobro de um número menos 4 é igual a 10. Qual é o número?", options: [5, 6, 7, 8], answer: 7 },
+      ...Array.from({ length: 43 }, (_, i) => {
+        const x = Math.floor(Math.random() * 10 + 1);
+        const y = Math.floor(Math.random() * 10 + 1);
+        const result = x * y + 5;
+        return {
+          question: `🔍 Questão ${i + 8}: Qual é o valor de x na equação ${x}x + 5 = ${result}?`,
+          options: [y - 1, y, y + 1, y + 2],
+          answer: y
+        };
+      })
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById("question").textContent = q.question;
+      const optionsContainer = document.getElementById("options");
+      optionsContainer.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt);
+        optionsContainer.appendChild(btn);
+      });
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("nextBtn").style.display = "none";
+    }
+
+    function checkAnswer(selected) {
+      const correct = questions[current].answer;
+      const feedback = document.getElementById("feedback");
+      if (selected === correct) {
+        feedback.textContent = "✅ Acertou!";
+        feedback.style.color = "green";
+        score++;
+      } else {
+        feedback.textContent = `❌ Errou! A resposta correta era ${correct}.`;
+        feedback.style.color = "red";
+      }
+      document.getElementById("nextBtn").style.display = "block";
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        document.getElementById("questionContainer").innerHTML = "<h2>Fim da Aventura!</h2>";
+        document.getElementById("score").textContent = `Você acertou ${score} de ${questions.length} perguntas.`;
+      }
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
